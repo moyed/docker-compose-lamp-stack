@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+   db:
+     build: ./mysql
+     # image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+       #- ./mysql:/docker-entrypoint-initdb.d
+     # restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: root
+       # MYSQL_DATABASE: cg_apiserver
+       # MYSQL_USER: root
+       # MYSQL_PASSWORD: root
+
+   php:
+    build: ./php
+    ports:
+      - '8000:80'
+    restart: always
+    volumes:
+       #- ./html:/var/www/html    #Test Script
+       - /var/log/apache2/error.log:/var/log/apache2/error.log
+       - /var/log/apache2/access.log:/var/log/apache2/access.log
+       - /var/www/html/apiserver.com/:/var/www/html
+    depends_on:
+      - db
+volumes:
+    db_data:
